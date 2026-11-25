@@ -50,6 +50,9 @@ class ImageGenerationRecord(BaseModel):
     lifestyle_valid: bool = False
     status: str = "pending"
     error: Optional[str] = None
+    # Failure category: 'quota_exhausted' | 'model_unavailable' | 'auth_error' |
+    #                   'invalid_url' | 'api_error' | 'transient' | None
+    error_category: Optional[str] = None
     latency_seconds: float = 0.0
     retries: int = 0
 
@@ -68,9 +71,14 @@ class ExecutionReport(BaseModel):
     products_processed: int = 0
     product_content_generated: int = 0
     product_content_failed: int = 0
+    # Per-failure-category content breakdowns
+    content_failures_by_category: Dict[str, int] = Field(default_factory=dict)
+    images_processed: int = 0
     images_generated: int = 0
     images_failed: int = 0
     images_skipped: int = 0
+    # Per-failure-category image breakdowns
+    image_failures_by_category: Dict[str, int] = Field(default_factory=dict)
     competitor_comparisons_completed: int = 0
     competitor_comparisons_failed: int = 0
     competitor_skipped: bool = False
@@ -80,6 +88,8 @@ class ExecutionReport(BaseModel):
     token_usage: Dict[str, int] = Field(
         default_factory=lambda: {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
     )
+    # True only when usage_metadata was returned by the API; False if estimated/zero
+    token_usage_verified: bool = False
     estimated_api_cost_usd: float = 0.0
     errors: List[str] = Field(default_factory=list)
     warnings: List[str] = Field(default_factory=list)

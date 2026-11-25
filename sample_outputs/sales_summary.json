@@ -1,0 +1,522 @@
+{
+  "kpis": {
+    "total_confirmed_sales": 2486417.02,
+    "total_units_sold": 11790,
+    "distinct_confirmed_orders": 9503,
+    "distinct_all_orders": 10392,
+    "average_order_value": 261.65,
+    "total_order_lines": 10692,
+    "confirmed_order_lines": 9771,
+    "excluded_order_lines": 474,
+    "separate_status_order_lines": 447,
+    "unclassified_status_order_lines": 0,
+    "unique_confirmed_skus": 3181,
+    "unique_total_sales_skus": 3343,
+    "confirmed_statuses_rule": [
+      "Processed"
+    ],
+    "excluded_statuses_rule": [
+      "Cancelled",
+      "Pending"
+    ],
+    "separate_statuses_rule": [
+      "OJ Shipping"
+    ]
+  },
+  "status_breakdown": [
+    {
+      "order_status": "Processed",
+      "treatment": "Included (Confirmed Sales)",
+      "order_lines": 9771,
+      "distinct_orders": 9503,
+      "units": 11790,
+      "amount": 2486417.02
+    },
+    {
+      "order_status": "Cancelled",
+      "treatment": "Excluded",
+      "order_lines": 452,
+      "distinct_orders": 425,
+      "units": 449,
+      "amount": 143191.49
+    },
+    {
+      "order_status": "OJ Shipping",
+      "treatment": "Reported Separately",
+      "order_lines": 447,
+      "distinct_orders": 447,
+      "units": 491,
+      "amount": 180843.21
+    },
+    {
+      "order_status": "Pending",
+      "treatment": "Excluded",
+      "order_lines": 22,
+      "distinct_orders": 17,
+      "units": 43,
+      "amount": 12412.88
+    }
+  ],
+  "oj_shipping_summary": {
+    "statuses": [
+      "OJ Shipping"
+    ],
+    "order_lines": 447,
+    "distinct_orders": 447,
+    "units": 491,
+    "potential_revenue": 180843.21,
+    "note": "OJ Shipping is reported separately and excluded from confirmed sales until its business definition (e.g., in-transit vs. unbilled/pending) is verified."
+  },
+  "monthly_performance": [
+    {
+      "month": "2025-07",
+      "confirmed_revenue": 1143885.47,
+      "units_sold": 5489,
+      "distinct_orders": 4445,
+      "order_lines": 4571,
+      "average_order_value": 257.34
+    },
+    {
+      "month": "2025-08",
+      "confirmed_revenue": 1294797.11,
+      "units_sold": 6090,
+      "distinct_orders": 4892,
+      "order_lines": 5026,
+      "average_order_value": 264.68
+    },
+    {
+      "month": "2025-09",
+      "confirmed_revenue": 47734.44,
+      "units_sold": 211,
+      "distinct_orders": 166,
+      "order_lines": 174,
+      "average_order_value": 287.56
+    }
+  ],
+  "top_10_by_revenue": [
+    {
+      "sku": "MFK-46119",
+      "revenue": 49979.57,
+      "units_sold": 179,
+      "distinct_orders": 167,
+      "avg_unit_price": 280.09
+    },
+    {
+      "sku": "IR150924",
+      "revenue": 34967.46,
+      "units_sold": 27,
+      "distinct_orders": 27,
+      "avg_unit_price": 1295.09
+    },
+    {
+      "sku": "MFK-87865",
+      "revenue": 22728.01,
+      "units_sold": 47,
+      "distinct_orders": 47,
+      "avg_unit_price": 483.57
+    },
+    {
+      "sku": "MFK-363098",
+      "revenue": 18180.78,
+      "units_sold": 90,
+      "distinct_orders": 89,
+      "avg_unit_price": 202.27
+    },
+    {
+      "sku": "MFK-107221",
+      "revenue": 18089.24,
+      "units_sold": 48,
+      "distinct_orders": 48,
+      "avg_unit_price": 376.86
+    },
+    {
+      "sku": "MFK-62000",
+      "revenue": 15799.21,
+      "units_sold": 51,
+      "distinct_orders": 49,
+      "avg_unit_price": 309.75
+    },
+    {
+      "sku": "MFK-991105",
+      "revenue": 14417.07,
+      "units_sold": 47,
+      "distinct_orders": 47,
+      "avg_unit_price": 306.75
+    },
+    {
+      "sku": "MFK-394147",
+      "revenue": 13768.7,
+      "units_sold": 38,
+      "distinct_orders": 34,
+      "avg_unit_price": 364.08
+    },
+    {
+      "sku": "IR412953",
+      "revenue": 13224.53,
+      "units_sold": 14,
+      "distinct_orders": 14,
+      "avg_unit_price": 944.61
+    },
+    {
+      "sku": "MFK-625892",
+      "revenue": 12204.94,
+      "units_sold": 43,
+      "distinct_orders": 43,
+      "avg_unit_price": 283.84
+    }
+  ],
+  "top_10_by_units": [
+    {
+      "sku": "MFK-46119",
+      "revenue": 49979.57,
+      "units_sold": 179,
+      "distinct_orders": 167,
+      "avg_unit_price": 280.09
+    },
+    {
+      "sku": "IR28604",
+      "revenue": 2652.01,
+      "units_sold": 111,
+      "distinct_orders": 72,
+      "avg_unit_price": 24.16
+    },
+    {
+      "sku": "IR81630",
+      "revenue": 2578.16,
+      "units_sold": 104,
+      "distinct_orders": 100,
+      "avg_unit_price": 24.66
+    },
+    {
+      "sku": "IR31340",
+      "revenue": 497.15,
+      "units_sold": 99,
+      "distinct_orders": 41,
+      "avg_unit_price": 5.69
+    },
+    {
+      "sku": "MFK-229529",
+      "revenue": 10373.93,
+      "units_sold": 96,
+      "distinct_orders": 95,
+      "avg_unit_price": 108.14
+    },
+    {
+      "sku": "MFK-363098",
+      "revenue": 18180.78,
+      "units_sold": 90,
+      "distinct_orders": 89,
+      "avg_unit_price": 202.27
+    },
+    {
+      "sku": "BIK-J-84J",
+      "revenue": 5937.56,
+      "units_sold": 90,
+      "distinct_orders": 47,
+      "avg_unit_price": 66.19
+    },
+    {
+      "sku": "IR01294",
+      "revenue": 4043.48,
+      "units_sold": 81,
+      "distinct_orders": 73,
+      "avg_unit_price": 49.23
+    },
+    {
+      "sku": "SJC-49347",
+      "revenue": 7027.15,
+      "units_sold": 79,
+      "distinct_orders": 66,
+      "avg_unit_price": 88.54
+    },
+    {
+      "sku": "MFK-604061",
+      "revenue": 2434.39,
+      "units_sold": 74,
+      "distinct_orders": 54,
+      "avg_unit_price": 33.21
+    }
+  ],
+  "low_performing_skus": [
+    {
+      "sku": "IR795505",
+      "revenue": 3.59,
+      "units_sold": 2,
+      "distinct_orders": 2,
+      "avg_unit_price": 1.79
+    },
+    {
+      "sku": "IR151932",
+      "revenue": 3.77,
+      "units_sold": 1,
+      "distinct_orders": 1,
+      "avg_unit_price": 3.77
+    },
+    {
+      "sku": "IR696598",
+      "revenue": 9.34,
+      "units_sold": 1,
+      "distinct_orders": 1,
+      "avg_unit_price": 9.34
+    },
+    {
+      "sku": "IR888836",
+      "revenue": 9.44,
+      "units_sold": 1,
+      "distinct_orders": 1,
+      "avg_unit_price": 9.44
+    },
+    {
+      "sku": "IR104020",
+      "revenue": 10.98,
+      "units_sold": 1,
+      "distinct_orders": 1,
+      "avg_unit_price": 10.98
+    },
+    {
+      "sku": "MFK-504705",
+      "revenue": 12.7,
+      "units_sold": 1,
+      "distinct_orders": 1,
+      "avg_unit_price": 12.7
+    },
+    {
+      "sku": "IR628654",
+      "revenue": 13.18,
+      "units_sold": 1,
+      "distinct_orders": 1,
+      "avg_unit_price": 13.18
+    },
+    {
+      "sku": "UQN-NH92292",
+      "revenue": 13.3,
+      "units_sold": 1,
+      "distinct_orders": 1,
+      "avg_unit_price": 13.3
+    },
+    {
+      "sku": "IR947743",
+      "revenue": 14.07,
+      "units_sold": 1,
+      "distinct_orders": 1,
+      "avg_unit_price": 14.07
+    },
+    {
+      "sku": "IR717168",
+      "revenue": 15.41,
+      "units_sold": 1,
+      "distinct_orders": 1,
+      "avg_unit_price": 15.41
+    }
+  ],
+  "non_moving_skus": {
+    "sales_catalog_non_moving_count": 162,
+    "sales_catalog_non_moving_sample": [
+      "CIT-UR-6252-09",
+      "DVF-122269",
+      "FDQ-78762",
+      "IR102199",
+      "IR112449",
+      "IR125809",
+      "IR151891",
+      "IR170708",
+      "IR176331",
+      "IR177872",
+      "IR184216",
+      "IR185031",
+      "IR186119",
+      "IR192602",
+      "IR198388",
+      "IR218864",
+      "IR221706",
+      "IR233857",
+      "IR252130",
+      "IR260520",
+      "IR264241",
+      "IR270733",
+      "IR284681",
+      "IR291352",
+      "IR293414"
+    ],
+    "sales_catalog_note": "Sales SKUs appearing only in Cancelled/Pending/OJ Shipping lines with 0 confirmed Processed units.",
+    "vendor_catalog_total": 25,
+    "vendor_catalog_overlap_with_sales": 0,
+    "vendor_catalog_non_moving_count": 25,
+    "vendor_catalog_note": "Vendor SKUs have 0 exact matches in the Sales Masked SKU/itemName universe; they cannot be assumed active or non-moving in sales without a cross-system SKU mapping table."
+  },
+  "vendor_performance": [
+    {
+      "vendor": "WareHouse",
+      "confirmed_revenue": 1641960.19,
+      "units_sold": 5694,
+      "distinct_orders": 4670,
+      "order_lines": 4767,
+      "revenue_share_pct": 66.04
+    },
+    {
+      "vendor": "Import",
+      "confirmed_revenue": 641654.06,
+      "units_sold": 4826,
+      "distinct_orders": 3931,
+      "order_lines": 3992,
+      "revenue_share_pct": 25.81
+    },
+    {
+      "vendor": "Closeout",
+      "confirmed_revenue": 89945.84,
+      "units_sold": 504,
+      "distinct_orders": 464,
+      "order_lines": 464,
+      "revenue_share_pct": 3.62
+    },
+    {
+      "vendor": "DropShip",
+      "confirmed_revenue": 77484.05,
+      "units_sold": 401,
+      "distinct_orders": 301,
+      "order_lines": 314,
+      "revenue_share_pct": 3.12
+    },
+    {
+      "vendor": "SecondWarehouse",
+      "confirmed_revenue": 35372.88,
+      "units_sold": 365,
+      "distinct_orders": 233,
+      "order_lines": 234,
+      "revenue_share_pct": 1.42
+    }
+  ],
+  "top_vendor_types": [
+    {
+      "vendor_type": "Highveld Furnishings",
+      "confirmed_revenue": 309825.68,
+      "units_sold": 687,
+      "distinct_orders": 595
+    },
+    {
+      "vendor_type": "Bluecrest Decor",
+      "confirmed_revenue": 286578.94,
+      "units_sold": 1457,
+      "distinct_orders": 1216
+    },
+    {
+      "vendor_type": "Granvia Decor",
+      "confirmed_revenue": 182669.96,
+      "units_sold": 635,
+      "distinct_orders": 531
+    },
+    {
+      "vendor_type": "Marloq Home",
+      "confirmed_revenue": 182009.8,
+      "units_sold": 514,
+      "distinct_orders": 425
+    },
+    {
+      "vendor_type": "Bluecrest International",
+      "confirmed_revenue": 180382.47,
+      "units_sold": 612,
+      "distinct_orders": 506
+    },
+    {
+      "vendor_type": "Wexford Overseas",
+      "confirmed_revenue": 157996.33,
+      "units_sold": 351,
+      "distinct_orders": 294
+    },
+    {
+      "vendor_type": "Orbita Overseas",
+      "confirmed_revenue": 107049.1,
+      "units_sold": 245,
+      "distinct_orders": 215
+    },
+    {
+      "vendor_type": "Highveld Enterprises",
+      "confirmed_revenue": 81480.81,
+      "units_sold": 322,
+      "distinct_orders": 275
+    },
+    {
+      "vendor_type": "Bluecrest Handicraft",
+      "confirmed_revenue": 67517.69,
+      "units_sold": 587,
+      "distinct_orders": 498
+    },
+    {
+      "vendor_type": "Silverpine Enterprises",
+      "confirmed_revenue": 54079.01,
+      "units_sold": 659,
+      "distinct_orders": 547
+    },
+    {
+      "vendor_type": "Bluecrest Trading Co",
+      "confirmed_revenue": 51972.04,
+      "units_sold": 205,
+      "distinct_orders": 186
+    },
+    {
+      "vendor_type": "Caldera Overseas",
+      "confirmed_revenue": 46303.67,
+      "units_sold": 246,
+      "distinct_orders": 168
+    },
+    {
+      "vendor_type": "Larkspur Industries",
+      "confirmed_revenue": 46284.59,
+      "units_sold": 338,
+      "distinct_orders": 297
+    },
+    {
+      "vendor_type": "Fernvale Supply Co",
+      "confirmed_revenue": 41271.28,
+      "units_sold": 201,
+      "distinct_orders": 126
+    },
+    {
+      "vendor_type": "Brightloom Enterprises",
+      "confirmed_revenue": 37614.76,
+      "units_sold": 105,
+      "distinct_orders": 82
+    }
+  ],
+  "carrier_distribution": [
+    {
+      "shipping_carrier": "FEDX",
+      "order_lines": 7233,
+      "line_share_pct": 67.65,
+      "distinct_orders": 7083,
+      "units": 8732,
+      "total_amount": 1600469.26
+    },
+    {
+      "shipping_carrier": "Carrier Not Mapped",
+      "order_lines": 1593,
+      "line_share_pct": 14.9,
+      "distinct_orders": 1573,
+      "units": 1953,
+      "total_amount": 233199.28
+    },
+    {
+      "shipping_carrier": "LTL",
+      "order_lines": 1237,
+      "line_share_pct": 11.57,
+      "distinct_orders": 1111,
+      "units": 1315,
+      "total_amount": 837520.54
+    },
+    {
+      "shipping_carrier": "UPSN",
+      "order_lines": 629,
+      "line_share_pct": 5.88,
+      "distinct_orders": 625,
+      "units": 773,
+      "total_amount": 151675.52
+    }
+  ],
+  "business_insights": [
+    "Confirmed sales reached $2,486,417.02 across 9,503 distinct orders (AOV $261.65); however, $180,843.21 across 447 lines (7.3% of confirmed revenue) sits in 'OJ Shipping' status and requires operational definition before revenue recognition, while 452 lines (4.2%) were cancelled.",
+    "Monthly confirmed revenue peaked in 2025-08 at $1,294,797.11 (6,090 units across 4,892 orders), compared to 2025-09 at $47,734.44 (note partial-month coverage at date boundaries).",
+    "Revenue has a long-tail structure: the top 10 SKUs generated $213,359.51 (8.6% of confirmed revenue), led by MFK-46119 at $49,979.57 across 179 units.",
+    "Fulfillment channel 'WareHouse' accounts for $1,641,960.19 (66.0% of confirmed revenue), followed by Import ($641,654.06), indicating strong reliance on primary warehouse/import stock.",
+    "1,593 order lines (14.9% of all lines) have 'Carrier Not Mapped', creating a logistics visibility gap that limits freight cost attribution and delivery SLA tracking."
+  ]
+}

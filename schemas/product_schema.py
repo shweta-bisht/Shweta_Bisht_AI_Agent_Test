@@ -74,6 +74,9 @@ class ProductContentItem(BaseModel):
     source_bullets_count: int = 0
     status: str = "completed"
     error: Optional[str] = None
+    # Failure category: 'quota_exhausted' | 'model_unavailable' | 'auth_error' |
+    #                   'api_error' | 'validation_error' | 'transient' | None
+    error_category: Optional[str] = None
     from_cache: bool = False
     prompt_tokens: int = 0
     completion_tokens: int = 0

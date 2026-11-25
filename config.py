@@ -68,6 +68,7 @@ class AppConfig:
     max_concurrent_requests: int = 3
     request_timeout: int = 120
     competitor_product_count: int = 5
+    image_limit: Optional[int] = None
     cache_enabled: bool = True
 
     sales_confirmed_statuses: List[str] = field(default_factory=lambda: ["Processed"])
@@ -92,6 +93,7 @@ class AppConfig:
         skip_competitors: bool = False,
         skip_content: bool = False,
         dry_run: bool = False,
+        image_limit: Optional[int] = None,
     ) -> "AppConfig":
         """Load configuration from `.env` and environment variables with optional CLI overrides."""
         if env_file is not None:
@@ -108,6 +110,17 @@ class AppConfig:
         search_key = (os.getenv("SEARCH_API_KEY") or "").strip() or None
         search_cse_id = (os.getenv("SEARCH_CSE_ID") or "").strip() or None
         search_provider = (os.getenv("SEARCH_PROVIDER") or "serper").strip().lower()
+
+        raw_img_limit = os.getenv("IMAGE_LIMIT")
+        resolved_img_limit = (
+            image_limit
+            if image_limit is not None
+            else (
+                _parse_int(raw_img_limit, 1, "IMAGE_LIMIT", minimum=1)
+                if raw_img_limit and raw_img_limit.strip()
+                else None
+            )
+        )
 
         return cls(
             gemini_api_key=gemini_key,
@@ -128,6 +141,7 @@ class AppConfig:
             competitor_product_count=_parse_int(
                 os.getenv("COMPETITOR_PRODUCT_COUNT"), 5, "COMPETITOR_PRODUCT_COUNT", minimum=1
             ),
+            image_limit=resolved_img_limit,
             cache_enabled=_parse_bool(os.getenv("CACHE_ENABLED"), default=True),
             sales_confirmed_statuses=_parse_csv_list(
                 os.getenv("SALES_CONFIRMED_STATUSES"), ["Processed"]
@@ -157,6 +171,16 @@ class AppConfig:
             errors.append(
                 f"Unsupported SEARCH_PROVIDER='{self.search_provider}'. "
                 f"Supported providers: {', '.join(SUPPORTED_SEARCH_PROVIDERS)}."
+            )
+
+        if self.image_limit is not None and self.image_limit < 1:
+            errors.append(
+                f"Invalid image_limit={self.image_limit}. Must be >= 1."
+            )
+
+        if self.skip_images and self.image_limit is not None:
+            warnings.append(
+                "--skip-images takes precedence over --image-limit; image generation will be skipped."
             )
 
         if not self.dry_run:
@@ -208,6 +232,7 @@ class AppConfig:
             "max_concurrent_requests": self.max_concurrent_requests,
             "request_timeout": self.request_timeout,
             "competitor_product_count": self.competitor_product_count,
+            "image_limit": self.image_limit,
             "cache_enabled": self.cache_enabled,
             "sales_confirmed_statuses": self.sales_confirmed_statuses,
             "sales_excluded_statuses": self.sales_excluded_statuses,

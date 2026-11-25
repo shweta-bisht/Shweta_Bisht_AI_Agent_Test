@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Dict, Optional, Sequence
 
 from schemas.competitor_schema import CompetitorResearchResult
 from schemas.execution_schema import ExecutionReport, ImageGenerationRecord
@@ -33,11 +33,26 @@ def build_execution_report(
 ) -> ExecutionReport:
     """Build an accurate ExecutionReport reflecting exact completed and failed operations."""
     content_ok = sum(1 for item in content_items if item.status == "completed")
-    content_err = sum(1 for item in content_items if item.status != "completed")
+    failed_content_items = [item for item in content_items if item.status != "completed"]
+    content_err = len(failed_content_items)
+    content_failure_categories: Dict[str, int] = {}
+    for item in failed_content_items:
+        category = item.error_category or "unknown"
+        content_failure_categories[category] = content_failure_categories.get(category, 0) + 1
 
     img_ok = sum(1 for rec in image_records if rec.status == "completed" and rec.lifestyle_valid)
-    img_err = sum(1 for rec in image_records if rec.status == "failed")
-    img_skip_count = products_total if (images_skipped or dry_run) else 0
+    failed_image_records = [rec for rec in image_records if rec.status == "failed"]
+    img_err = len(failed_image_records)
+    image_failure_categories: Dict[str, int] = {}
+    for record in failed_image_records:
+        category = record.error_category or "unknown"
+        image_failure_categories[category] = image_failure_categories.get(category, 0) + 1
+    img_processed = img_ok + img_err
+    if images_skipped or dry_run:
+        img_skip_count = products_total
+    else:
+        explicit_skipped = sum(1 for rec in image_records if rec.status == "skipped")
+        img_skip_count = max(explicit_skipped, max(0, products_total - img_processed))
 
     comp_ok = 0
     comp_err = 0
@@ -74,9 +89,12 @@ def build_execution_report(
         products_processed=products_total,
         product_content_generated=content_ok,
         product_content_failed=content_err,
+        content_failures_by_category=content_failure_categories,
+        images_processed=img_processed,
         images_generated=img_ok,
         images_failed=img_err,
         images_skipped=img_skip_count,
+        image_failures_by_category=image_failure_categories,
         competitor_comparisons_completed=comp_ok,
         competitor_comparisons_failed=comp_err,
         competitor_skipped=competitor_skipped or dry_run,

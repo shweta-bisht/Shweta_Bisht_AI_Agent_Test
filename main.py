@@ -45,7 +45,14 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     parser.add_argument(
         "--skip-images",
         action="store_true",
-        help="Skip Gemini lifestyle image generation.",
+        help="Skip Gemini lifestyle image generation (takes precedence over --image-limit).",
+    )
+    parser.add_argument(
+        "--image-limit",
+        dest="image_limit",
+        type=int,
+        default=None,
+        help="Generate lifestyle images for only the first N valid products (default: all products).",
     )
     parser.add_argument(
         "--skip-competitors",
@@ -83,6 +90,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             skip_competitors=args.skip_competitors,
             skip_content=args.skip_content,
             dry_run=args.dry_run,
+            image_limit=args.image_limit,
         )
         if args.no_cache:
             config = AppConfig(**{**config.__dict__, "cache_enabled": False})
@@ -121,7 +129,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     print(f"Duration              : {report.total_duration_seconds:.2f}s")
     print(f"Vendor SKUs Processed : {report.products_processed}/{report.products_total}")
     print(f"Content Generated     : {report.product_content_generated} (failed: {report.product_content_failed})")
-    print(f"Images Generated      : {report.images_generated} (failed: {report.images_failed}, skipped: {report.images_skipped})")
+    print(f"Images Processed      : {report.images_processed} (generated: {report.images_generated}, failed: {report.images_failed}, skipped: {report.images_skipped})")
     print(f"Competitor Research   : {report.competitor_comparisons_completed} completed (failed: {report.competitor_comparisons_failed})")
     print(f"Sales Lines Processed : {report.sales_records_processed}")
     print(f"Tokens / Est. Cost    : {report.token_usage.get('total_tokens', 0)} tokens / ${report.estimated_api_cost_usd:.4f}")

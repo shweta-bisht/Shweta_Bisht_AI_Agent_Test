@@ -1,6 +1,10 @@
 # CommerceAI (`commerce-ai-agent`)
 
+**Implementation Track:** **Track A — Code-based agent** built with **Python** and **LangGraph**.
+
 A self-hosted, Bring-Your-Own-Key (BYOK) multi-agent e-commerce automation pipeline built with **LangGraph**, **Google Gemini**, **Pandas**, **OpenPyXL**, **Matplotlib**, and **Pydantic v2**.
+
+[Project report and execution results](./PROJECT_REPORT.md)
 
 Given a single multi-sheet Excel workbook (`vendor data` and `sales data`), CommerceAI runs end-to-end in one command to perform:
 
@@ -9,6 +13,14 @@ Given a single multi-sheet Excel workbook (`vendor data` and `sales data`), Comm
 3. **Lifestyle Image Generation** (downloads reference product image, validates format, and calls Gemini image-to-image generation).
 4. **Competitor Analysis** (5 diverse products, confidence-gated reference price matching, and verifiable search-provider research).
 5. **Deterministic Sales Analysis** (Pandas KPIs, explicit order-status rules separating `OJ Shipping`, Matplotlib dashboard, and multi-sheet Excel reports).
+
+---
+
+## Approach & Self-Hosted BYOK Model
+
+- **Track & Framework:** **Track A — Code-based agent** implemented in **Python** using **LangGraph** (`StateGraph` + `MemorySaver` checkpointing), with clear separation between ingestion/cleaning (`processors/`), external API services (`services/`), domain agents (`agents/`), Pydantic v2 schemas (`schemas/`), and reporting (`reports/`).
+- **Self-Hosted Bring Your Own Key (BYOK):** CommerceAI ships with zero developer-owned API keys. Evaluators configure their own credentials locally in `.env` (loaded via `python-dotenv` in `config.py`). Secrets are validated at startup, masked in logs (`SecretRedactingFilter` + `mask_secret`), and excluded from Git via `.gitignore`.
+- **Graceful Optional Integrations:** `GEMINI_API_KEY` is required for live content and image generation (or omitted in `--dry-run` mode). `SEARCH_API_KEY` is optional—when omitted, competitor research explicitly marks comparisons unavailable without fabricating prices or URLs.
 
 ---
 
@@ -151,6 +163,7 @@ cp .env.example .env
 | `MAX_RETRIES` | Optional (default `3`) | Max retry attempts per external call |
 | `MAX_CONCURRENT_REQUESTS` | Optional (default `3`) | Worker concurrency for Gemini text/image calls |
 | `REQUEST_TIMEOUT` | Optional (default `120`) | Request timeout in seconds |
+| `IMAGE_LIMIT` | Optional (default unset = all SKUs) | Limit lifestyle image generation to the first N valid products |
 
 ---
 
@@ -170,28 +183,39 @@ python main.py --input "test data.xlsx"
 # Validate workbook, run cleaning & deterministic sales analytics without API calls
 python main.py --input "test data.xlsx" --dry-run
 
-# Skip lifestyle image generation
+# Generate lifestyle images for only the first 5 valid products (supports all 25 by default)
+python main.py --input "test data.xlsx" --image-limit 5
+
+# Skip lifestyle image generation (takes precedence over --image-limit)
 python main.py --input "test data.xlsx" --skip-images
 
 # Skip competitor research
 python main.py --input "test data.xlsx" --skip-competitors
 
-# Custom output directory & fresh uncached generation
-python main.py --input "test data.xlsx" --output-dir outputs --no-cache
+# Write all generated reports to a custom directory (e.g. output/) while keeping images in images/
+python main.py --input "test data.xlsx" --output-dir output --no-cache
 ```
 
 ### Exit Codes
 
 - `0`: Completed cleanly (or `--dry-run` succeeded).
 - `1`: Fatal configuration, input workbook, or pipeline error.
-- `2`: Completed with partial SKU/task failures (all completed branches and failure details are accurately recorded in `outputs/execution_report.json` and `outputs/final_summary.xlsx`).
+- `2`: Completed with partial SKU/task failures (all completed branches and failure details are accurately recorded in `<output-dir>/execution_report.json` and `<output-dir>/final_summary.xlsx`).
+
+### Current Gemini limitation
+
+The configured API key can list `gemini-3.8-flash` and `gemini-2.5-flash-image`, but model availability does not guarantee generation quota. Live text-generation requests in this environment were rejected after the Gemini free-tier daily quota was exhausted, and a prior live image-generation attempt was rejected with `RESOURCE_EXHAUSTED`. No lifestyle images were successfully generated. The image branch remains enabled and records failures separately from skipped work; no placeholder or synthetic lifestyle images are written.
+
+Sample outputs from successful offline branches are in [`sample_outputs/`](./sample_outputs/): sales analytics in `sales_summary.json` and `sales_analysis.xlsx`, the dashboard in `sales_dashboard.png`, and the consolidated workbook in `final_summary.xlsx`. `execution_report.json` documents the successful dry-run branches. `live_execution_report.json` captures the latest live attempt: 25 content failures, 10,692 sales records processed, and images marked skipped. A prior image attempt was rejected with `RESOURCE_EXHAUSTED`, as noted above.
 
 ---
 
 ## Generated Outputs
 
+By default, reports are written to `outputs/` (override with `--output-dir output` or `OUTPUT_DIR`) and images are written to `images/` (override with `--image-dir` or `IMAGE_DIR`):
+
 ```text
-outputs/
+<output-dir>/                    # e.g., outputs/ or output/ (--output-dir output)
 ├── product_content.xlsx         # Generated titles, descriptions, 5 features, grounded attributes
 ├── product_content.json         # Structured Pydantic JSON output for all vendor SKUs
 ├── competitor_analysis.xlsx     # Competitor comparison + Reference Price Matching audit sheet

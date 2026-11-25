@@ -1,0 +1,46 @@
+{
+  "run_id": "900f0bb75c",
+  "start_time": "2026-11-25T13:26:39.355830+00:00",
+  "end_time": "2026-11-25T13:26:49.488859+00:00",
+  "total_duration_seconds": 10.133,
+  "final_status": "dry_run_completed",
+  "dry_run": true,
+  "input_workbook": "test data.xlsx",
+  "products_total": 25,
+  "products_processed": 25,
+  "product_content_generated": 0,
+  "product_content_failed": 0,
+  "content_failures_by_category": {},
+  "images_processed": 0,
+  "images_generated": 0,
+  "images_failed": 0,
+  "images_skipped": 25,
+  "image_failures_by_category": {},
+  "competitor_comparisons_completed": 0,
+  "competitor_comparisons_failed": 0,
+  "competitor_skipped": true,
+  "sales_records_processed": 10692,
+  "api_failures": 0,
+  "retry_counts": 0,
+  "token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+  },
+  "token_usage_verified": false,
+  "estimated_api_cost_usd": 0.0,
+  "errors": [],
+  "warnings": [
+    "Competitor research skipped (dry-run mode).",
+    "Product content generation skipped (dry-run mode).",
+    "Lifestyle image generation skipped (dry-run mode)."
+  ],
+  "generated_files": [
+    "sample_outputs\\data_quality_report.json",
+    "sample_outputs\\execution_report.json",
+    "sample_outputs\\final_summary.xlsx",
+    "sample_outputs\\sales_analysis.xlsx",
+    "sample_outputs\\sales_dashboard.png",
+    "sample_outputs\\sales_summary.json"
+  ]
+}

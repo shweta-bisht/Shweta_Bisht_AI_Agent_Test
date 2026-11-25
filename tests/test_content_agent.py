@@ -14,6 +14,7 @@ from processors.data_cleaner import clean_workbook_data
 from processors.excel_reader import read_workbook
 from schemas.product_schema import ProductContentLLMResponse
 from services.gemini_service import GeminiContentService
+from services.retry_service import QuotaExhaustedError, failure_category
 from utils.cost_tracker import CostTracker
 
 
@@ -34,6 +35,11 @@ class _MockModels:
 class _MockGenAIClient:
     def __init__(self, responses):
         self.models = _MockModels(responses)
+
+
+def test_failure_category_identifies_quota_exhaustion() -> None:
+    error = QuotaExhaustedError("Gemini content generation: quota exhausted (quota_daily)")
+    assert failure_category(error) == "quota_exhausted"
 
 
 def _valid_llm_json(title: str = "Benjara Black Power Reclining Chair") -> str:
@@ -113,6 +119,7 @@ def test_content_agent_sku_partial_failure_and_grounding(
     status_map = {r.sku: r for r in results}
     assert status_map["SKU-101"].status == "completed"
     assert status_map["SKU-102"].status == "failed"
+    assert status_map["SKU-102"].error_category == "transient"
     assert status_map["SKU-103"].status == "completed"
     # SKU-103 had Color=None in workbook, so grounding enforces colour=None
     assert status_map["SKU-103"].attributes.colour is None

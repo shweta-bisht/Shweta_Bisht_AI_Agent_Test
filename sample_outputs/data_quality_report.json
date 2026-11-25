@@ -1,0 +1,70 @@
+{
+  "workbook_path": "test data.xlsx",
+  "vendor_original_records": 25,
+  "vendor_processed_records": 25,
+  "vendor_duplicate_skus": [],
+  "vendor_missing_values": {},
+  "vendor_invalid_image_urls": [],
+  "vendor_blank_bullets_removed": 159,
+  "vendor_duplicate_bullets_removed": 0,
+  "sales_original_records": 10692,
+  "sales_processed_records": 10692,
+  "sales_missing_values": {},
+  "sales_invalid_dates": 0,
+  "sales_non_positive_quantities": 94,
+  "sales_non_positive_prices": 40,
+  "sales_amount_mismatches": 0,
+  "sales_exact_duplicate_rows": 0,
+  "sales_duplicate_order_lines": 0,
+  "sales_unmapped_carriers": 1593,
+  "sales_date_range": {
+    "min_date": "2025-07-02",
+    "max_date": "2025-09-01"
+  },
+  "status_distribution": {
+    "Processed": 9771,
+    "Cancelled": 452,
+    "OJ Shipping": 447,
+    "Pending": 22
+  },
+  "carrier_distribution": {
+    "FEDX": 7233,
+    "Carrier Not Mapped": 1593,
+    "LTL": 1237,
+    "UPSN": 629
+  },
+  "cleaning_operations": [
+    "Normalized column names by trimming leading/trailing and repeated whitespace.",
+    "Stripped whitespace across all vendor and sales string attributes.",
+    "Removed blank vendor bullet slots (Bullet 1..20) and deduplicated repeated bullets per SKU.",
+    "Parsed non-zero product and shipping dimension slots while keeping missing optional values as null.",
+    "Validated vendor Image URL 1 syntax (HTTP/HTTPS with valid network location).",
+    "Preserved original raw attributes for every vendor SKU and original row indices/values for sales.",
+    "Parsed sales orderDate timestamps and validated numeric quantity, price, and amount columns.",
+    "Verified amount == round(quantity * price, 2) within 0.01 tolerance across all sales records.",
+    "Normalized orderStatus values and flagged unmapped shipping carriers without discarding records.",
+    "Audited exact duplicate rows, duplicate order lines, and cross-sheet SKU overlap."
+  ],
+  "excluded_or_flagged_records": [
+    {
+      "sheet": "sales data",
+      "reason": "Non-positive quantity (<= 0)",
+      "count": 94,
+      "action": "Retained for audit; excluded from confirmed sales if status is Cancelled/Pending"
+    },
+    {
+      "sheet": "sales data",
+      "reason": "Non-positive unit price (<= 0)",
+      "count": 40,
+      "action": "Retained and flagged via flag_non_positive_price (zero-revenue/promo lines)"
+    },
+    {
+      "sheet": "sales data",
+      "reason": "Unmapped shipping carrier",
+      "count": 1593,
+      "action": "Retained and reported explicitly in carrier distribution"
+    }
+  ],
+  "sku_overlap_count": 0,
+  "sku_overlap_note": "Exact SKU overlap count: 0. Vendor SKUs and sales Masked SKUs are completely disjoint SKU systems; reference pricing requires explicit fuzzy/semantic matching with confidence thresholds."
+}

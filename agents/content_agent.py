@@ -13,6 +13,7 @@ from schemas.product_schema import (
     ProductContentItem,
 )
 from services.gemini_service import GeminiContentService
+from services.retry_service import failure_category
 from utils.cost_tracker import CostTracker
 from utils.file_utils import ensure_dir, read_json, safe_filename, write_json
 from utils.logger import get_logger
@@ -130,6 +131,7 @@ class ContentGenerationAgent:
                 source_bullets_count=len(product.bullets),
                 status="failed",
                 error=str(exc),
+                error_category=failure_category(exc),
             )
 
     def run(

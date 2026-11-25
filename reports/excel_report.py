@@ -447,6 +447,7 @@ def export_final_summary_workbook(
         ["Products Processed", execution_report.products_processed],
         ["Product Content Generated", execution_report.product_content_generated],
         ["Product Content Failed", execution_report.product_content_failed],
+        ["Images Processed", execution_report.images_processed],
         ["Images Generated", execution_report.images_generated],
         ["Images Failed", execution_report.images_failed],
         ["Images Skipped", execution_report.images_skipped],

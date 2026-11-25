@@ -12,7 +12,12 @@ from google.genai import types
 from pydantic import BaseModel
 
 from schemas.product_schema import NormalizedVendorProduct, ProductContentLLMResponse
-from services.retry_service import execute_with_retry
+from services.retry_service import (
+    QuotaExhaustedError,
+    RetryExhaustedError,
+    classify_api_error,
+    execute_with_retry,
+)
 from utils.cost_tracker import CostTracker
 from utils.logger import get_logger
 
@@ -90,7 +95,11 @@ class GeminiContentService:
     def generate_product_content(
         self, product: NormalizedVendorProduct
     ) -> Tuple[ProductContentLLMResponse, Dict[str, Any]]:
-        """Call Gemini, validate structured JSON against Pydantic v2, and return metrics."""
+        """Call Gemini, validate structured JSON against Pydantic v2, and return metrics.
+
+        Returns (validated_response, metrics_dict).
+        metrics_dict includes 'error_category' on failure path (re-raised as exception).
+        """
         prompt = self.build_product_prompt(product)
 
         def _invoke() -> Tuple[ProductContentLLMResponse, Dict[str, Any]]:
@@ -125,6 +134,7 @@ class GeminiContentService:
             total_tokens = int(
                 getattr(usage, "total_token_count", prompt_tokens + completion_tokens) or 0
             )
+            usage_verified = usage is not None and total_tokens > 0
             if self.cost_tracker:
                 self.cost_tracker.record_text_usage(
                     self.model_name, prompt_tokens, completion_tokens
@@ -134,6 +144,7 @@ class GeminiContentService:
                 "prompt_tokens": prompt_tokens,
                 "completion_tokens": completion_tokens,
                 "total_tokens": total_tokens,
+                "usage_verified": usage_verified,
                 "latency_seconds": latency,
             }
 

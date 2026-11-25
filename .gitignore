@@ -5,6 +5,7 @@ __pycache__/
 *.pyo
 .pytest_cache/
 logs/
+output/
 outputs/
 images/
 test_data.xlsx
@@ -12,3 +13,4 @@ test data.xlsx
 *.egg-info/
 .coverage
 htmlcov/
+PROJECT_REPORT.md

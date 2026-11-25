@@ -10,6 +10,7 @@ from config import AppConfig
 from schemas.execution_schema import ImageGenerationRecord
 from schemas.product_schema import NormalizedVendorProduct
 from services.gemini_image_service import GeminiImageService
+from services.retry_service import failure_category
 from utils.cost_tracker import CostTracker
 from utils.file_utils import ensure_dir, safe_filename
 from utils.logger import get_logger
@@ -57,6 +58,7 @@ class LifestyleImageAgent:
                 image_url=product.image_url,
                 status="failed",
                 error="Missing or invalid Image URL 1.",
+                error_category="invalid_url",
             )
 
         service = self._get_service()
@@ -90,6 +92,7 @@ class LifestyleImageAgent:
                 image_url=product.image_url,
                 status="failed",
                 error=f"Reference image error: {exc}",
+                error_category=failure_category(exc),
             )
 
         try:
@@ -120,6 +123,7 @@ class LifestyleImageAgent:
                 lifestyle_valid=False,
                 status="failed",
                 error=str(exc),
+                error_category=failure_category(exc),
             )
 
     def run(
@@ -127,26 +131,74 @@ class LifestyleImageAgent:
         products: Sequence[NormalizedVendorProduct],
         image_dir: Optional[Path] = None,
     ) -> List[ImageGenerationRecord]:
+        if self.config.skip_images:
+            logger.info("Lifestyle image generation skipped (--skip-images).")
+            return [
+                ImageGenerationRecord(
+                    sku=p.sku,
+                    image_url=p.image_url,
+                    status="skipped",
+                    error="Skipped (--skip-images)",
+                )
+                for p in products
+            ]
+
         base_dir = image_dir or self.config.image_dir
         original_dir = ensure_dir(base_dir / "original")
         lifestyle_dir = ensure_dir(base_dir / "lifestyle")
 
+        limit = self.config.image_limit
+        if limit is not None:
+            valid_candidates = [p for p in products if p.image_url and p.image_url_valid]
+            target_products = valid_candidates[:limit]
+            target_skus = {p.sku for p in target_products}
+            logger.info(
+                "Applying --image-limit=%d: selected %d valid product(s) out of %d total.",
+                limit,
+                len(target_products),
+                len(products),
+            )
+        else:
+            target_products = list(products)
+            target_skus = {p.sku for p in target_products}
+
         ordered_records: Dict[str, ImageGenerationRecord] = {}
-        max_workers = max(1, min(self.config.max_concurrent_requests, len(products) or 1))
+        if target_products:
+            max_workers = max(1, min(self.config.max_concurrent_requests, len(target_products)))
+            with ThreadPoolExecutor(max_workers=max_workers) as pool:
+                future_map = {
+                    pool.submit(
+                        self._process_single_sku, product, original_dir, lifestyle_dir
+                    ): product.sku
+                    for product in target_products
+                }
+                for future in as_completed(future_map):
+                    sku = future_map[future]
+                    ordered_records[sku] = future.result()
 
-        with ThreadPoolExecutor(max_workers=max_workers) as pool:
-            future_map = {
-                pool.submit(
-                    self._process_single_sku, product, original_dir, lifestyle_dir
-                ): product.sku
-                for product in products
-            }
-            for future in as_completed(future_map):
-                sku = future_map[future]
-                ordered_records[sku] = future.result()
+        results: List[ImageGenerationRecord] = []
+        for p in products:
+            if p.sku in ordered_records:
+                results.append(ordered_records[p.sku])
+            elif p.sku not in target_skus:
+                results.append(
+                    ImageGenerationRecord(
+                        sku=p.sku,
+                        image_url=p.image_url,
+                        status="skipped",
+                        error=f"Skipped (--image-limit={limit})",
+                    )
+                )
 
-        results = [ordered_records[p.sku] for p in products]
+        processed = sum(1 for r in results if r.status in {"completed", "failed"})
         completed = sum(1 for r in results if r.status == "completed")
         failed = sum(1 for r in results if r.status == "failed")
-        logger.info("Lifestyle image generation finished: %d completed, %d failed.", completed, failed)
+        skipped = sum(1 for r in results if r.status == "skipped")
+        logger.info(
+            "Lifestyle image generation finished: %d processed, %d completed, %d failed, %d skipped.",
+            processed,
+            completed,
+            failed,
+            skipped,
+        )
         return results
